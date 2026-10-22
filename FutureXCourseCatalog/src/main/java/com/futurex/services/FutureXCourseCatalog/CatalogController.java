@@ -2,6 +2,9 @@ package com.futurex.services.FutureXCourseCatalog;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +16,20 @@ public class CatalogController {
     @Autowired
     private EurekaClient client;
 
+    public String fallbackGetCatalogHome(Exception ex) {
+        return "Fallback: Unable to reach course service.";
+    }
+
+    public String fallbackGetCatalog(Exception ex) {
+        return "Fallback: Unable to retrieve course catalog.";
+    }
+
+    public String fallbackGetSpecificCourse(Exception ex) {
+        return "Fallback: Unable to retrieve first course.";
+    }
+
     @RequestMapping("/")
+    @CircuitBreaker(name = "courseService", fallbackMethod = "fallbackGetCatalogHome")
     public String getCatalogHome() {
         String courseAppMesage = "";
         //String courseAppURL = "http://localhost:8080/";
@@ -26,6 +42,7 @@ public class CatalogController {
     }
 
     @RequestMapping("/catalog")
+    @CircuitBreaker(name = "courseService", fallbackMethod = "fallbackGetCatalog")
     public String getCatalog() {
         String courses = "";
         //String courseAppURL = "http://localhost:8080/courses";
@@ -39,6 +56,7 @@ public class CatalogController {
     }
 
     @RequestMapping("/firstcourse")
+    @CircuitBreaker(name = "courseService", fallbackMethod = "fallbackGetSpecificCourse")
     public String getSpecificCourse() {
         Course course = new Course();
         //String courseAppURL = "http://localhost:8080/1";
