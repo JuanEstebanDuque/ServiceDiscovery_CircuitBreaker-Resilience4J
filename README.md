@@ -1,5 +1,11 @@
 # Service Discovery y Circuit Breaker con Resilience4j
 
+- Juan Esteban Duque Taborda 
+- Santiago Castillo Llanos 
+- Juan Pablo Ordoñez Jimenez 
+
+
+
 Taller de patrones de arquitectura de microservicios. Tres servicios Spring Boot se descubren entre sí con **Eureka**. El catálogo se protege con un **Circuit Breaker** de **Resilience4j** para que siga respondiendo cuando el servicio de cursos se cae.
 
 ## Objetivo
